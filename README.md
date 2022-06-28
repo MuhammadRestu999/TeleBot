@@ -69,7 +69,7 @@ Edit file config.json :
 
 <br><br><br><br><br>
 ## Tutorial
-<iframe width="932" height="1602" src="https://www.youtube.com/embed/t_qWtyYNWDw" title="Cara membuat bot Telegram" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![YouTube](https://img.youtube.com/vi/t_qWtyYNWDw/0.jpg)](https://www.youtube.com/watch?v=t_qWtyYNWDw)
 
 <br><br><br><br><br>
 ## Menjalankan bot

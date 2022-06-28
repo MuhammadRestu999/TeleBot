@@ -16,7 +16,7 @@ Di Termux :
 ```bash
 pkg update -y
 pkg upgrade -y
-pkg install git nodejs-lts -y
+pkg install nano git nodejs-lts -y
 git clone https://github.com/MuhammadRestu999/TeleBot
 cd TeleBot
 npm install
@@ -26,7 +26,7 @@ Di Ubuntu, VPS/RDP, etc :
 ```bash
 apt update -y
 apt upgrade -y
-apt install git nodejs-lts -y
+apt install nano git nodejs-lts -y
 git clone https://github.com/MuhammadRestu999/TeleBot
 cd TeleBot
 npm install
@@ -69,7 +69,7 @@ Edit file config.json :
 
 <br><br><br><br><br>
 ## Tutorial
-Coming soon
+<iframe width="932" height="1602" src="https://www.youtube.com/embed/t_qWtyYNWDw" title="Cara membuat bot Telegram" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 <br><br><br><br><br>
 ## Menjalankan bot

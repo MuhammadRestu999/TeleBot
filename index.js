@@ -12,6 +12,7 @@ function watch(f, callback) {
   logger.INFO(`Watching ${f}`)
   fs.watch(f, function(type, file) {
     if(callback) return callback()
+    if(f.endsWith(".swp")) return
     if(f[f.split("/").length - 1] != file) {
       if(type == "rename") {
         if(!fs.existsSync(f + file)) logger.WARN(`${file} file deleted`)

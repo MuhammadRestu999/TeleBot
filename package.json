@@ -17,7 +17,12 @@
   "dependencies": {
     "axios": "^0.26.0",
     "chalk": "^4.1.0",
-    "node-fetch": "^3.2.0",
-    "telegraf": "^4.7.0"
+    "cheerio": "^1.0.0-rc.12",
+    "file-type": "^16.4.0",
+    "form-data": "^4.0.0",
+    "jsdom": "^20.0.0",
+    "node-fetch": "^2.6.1",
+    "telegraf": "^4.7.0",
+    "yt-search": "^2.10.3"
   }
 }

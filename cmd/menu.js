@@ -40,11 +40,7 @@ module.exports = {
     function getCmd() {
       let result = ""
       let last = ""
-      let OneTags = Command.filter((v) => {
-        let hm = v.tags != last
-        last = v.tags
-        return hm
-      }).map(v => v.tags)
+      let OneTags = [...new Set(Command.map(v => v.tags))]
       for(let Tags of OneTags) {
         let list = Command.filter(v => v.tags == Tags)
         result += `├──「 ${Tags} 」\n`

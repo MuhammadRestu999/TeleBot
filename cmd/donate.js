@@ -2,14 +2,14 @@ module.exports = {
   start: async function(ctx, { Telegram, user, message, text, is }) {
     let str = `
 <pre>╭─「 Donasi • Pulsa 」
-│ • Im3 : 085783417029
-╰────
+│ • Im3 : </pre><pre>085783417029</pre>
+<pre>╰────
 
 ╭─「 Donasi • Non Pulsa 」
-│ • Dana    : 085783417029
-│ • Gopay   : 085783417029
-│ • OVO     : 085783417029
-│ • Saweria : https://saweria.co/MuhammadRestu
+│ • Dana    : </pre><pre>085783417029</pre><pre>
+│ • Gopay   : </pre><pre>085783417029</pre><pre>
+│ • OVO     : </pre><pre>085783417029</pre><pre>
+│ • Saweria : </pre><a href="https://saweria.co/MuhammadRestu">https://saweria.co/MuhammadRestu</a><pre>
 ╰────</pre>
 `.trim()
     ctx.replyWithHTML(str, { disable_web_page_preview: true })

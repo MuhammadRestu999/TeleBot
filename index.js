@@ -1,18 +1,56 @@
-const { Telegraf, Telegram } = require("telegraf")
+const { Telegraf, Telegram, Markup } = require("telegraf")
 const chalk = require("chalk")
-const { logger, clockString, parseSeconds } = require("./lib/function")
+const { logger, clockString, parseSeconds, sleep } = require("./lib/function")
 const fs = require("fs")
 const os = require("os")
 const util = require("util")
+const axios = require("axios")
+const fetch = require("node-fetch")
+const FormData = require("form-data")
+const cheerio = require("cheerio")
+const jsdom = require("jsdom")
 
 const { token, owner, ownerLink, ownerId, version, prefix } = JSON.parse(fs.readFileSync("./config.json"))
 
-function watch(f, callback) {
+global.Markup = Markup
+global.Telegram = Telegram
+global.Telegraf = Telegraf
+global.fs = fs
+global.util = util
+global.axios = axios
+global.fetch = fetch
+global.FormData = FormData
+global.cheerio = cheerio
+global.jsdom = jsdom
+global.db = JSON.parse(fs.readFileSync("db.json"))
+db.save = function() {
+  return new Promise((res, rej) => {
+    logger.custom("cyan", "DB", "Saving database")
+    fs.writeFile("db.json", JSON.stringify({ data: db.data }, null, 2), (e) => {
+      if(e) {
+        logger.ERROR("[DB] Error")
+        console.log(e)
+        rej(false)
+      } else {
+        logger.custom("cyan", "DB", "Successfully save database")
+        res(true)
+      }
+    })
+  })
+}
+db.interval = setInterval(async function() {
+  await db.save()
+}, 1000*60*1) // Every 1 minute
+
+function watch(f, callback, co) {
   if(!fs.existsSync(f)) return logger.ERROR(`Cannot read file or folder ${f}!`)
   logger.INFO(`Watching ${f}`)
   fs.watch(f, function(type, file) {
-    if(callback) return callback()
-    if(f.endsWith(".swp")) return
+    if(file.endsWith(".swp")) return
+    if(callback) {
+      if(co) return callback()
+      else callback()
+    }
     if(f[f.split("/").length - 1] != file) {
       if(type == "rename") {
         if(!fs.existsSync(f + file)) logger.WARN(`${file} file deleted`)
@@ -35,22 +73,26 @@ function watch(f, callback) {
   })
 }
 watch("./cmd/")
-watch("./lib/tele.js", () => { global.tele = require("./lib/tele") })
-watch("./lib/simple.js", () => { global.simple = require("./lib/simple") })
+watch("./lib/scrape.js")
+watch("./lib/tele.js", () => { global.tele = require("./lib/tele") }, false)
+watch("./lib/simple.js", () => { global.simple = require("./lib/simple") }, false)
 
 if(token == "") return logger.ERROR("Tokens cannot be empty!")
 
 const bot = new Telegraf(token)
+global.bot = bot
 
 bot.on("new_chat_members", async(up) => {
   global.tele = require("./lib/tele")
   let { message } = up
-  let pp_gc = await tele.getPhotoProfile(message.chat.id)
+
+  if(!db.data.group[message.chat.id]) db.data.group[message.chat.id] = {}
+  if(!db.data.group[message.chat.id].member) db.data.group[message.chat.id].member = []
+
   let gc = message.chat.title
-  let gc_mem = await bot.telegram.getChatMembersCount(message.chat.id)
   for(let USER of message.new_chat_members) {
+    if(USER.username) db.data.group[message.chat.id].member.push(USER.username)
     let user = tele.getUser(USER)
-    let pp = await tele.getPhotoProfile(user.id)
     let fname = tele.getUser(user).full_name
     logger.custom("cyan", "JOIN", chalk.whiteBright(fname) + " " + chalk.greenBright("join in") + " " + chalk.whiteBright(gc))
     up.reply(`Kon\'nichiwa ${USER.username ? "@" + USER.username : user.full_name}!`)
@@ -59,12 +101,16 @@ bot.on("new_chat_members", async(up) => {
 bot.on("left_chat_member", async(up) => {
   global.tele = require("./lib/tele")
   let { message } = up
+
+  if(!db.data.group[message.chat.id]) db.data.group[message.chat.id] = {}
+  if(!db.data.group[message.chat.id].member) db.data.group[message.chat.id].member = []
+
   let user = message.left_chat_member
-  let pp_gc = await tele.getPhotoProfile(message.chat.id)
   let gc = message.chat.title
-  let gc_mem = await bot.telegram.getChatMembersCount(message.chat.id)
-  let pp = await tele.getPhotoProfile(user.id)
   let fname = tele.getUser(user).full_name
+  if(user.username) {
+    if(db.data.group[message.chat.id].member.indexOf(user.username) != -1) db.data.group[message.chat.id].member.splice(db.data.group[message.chat.id].member.indexOf(user.username), 1)
+  }
   logger.custom("cyan", "LEAVE", chalk.whiteBright(fname) + " " + chalk.greenBright("leaving group") + " " + chalk.whiteBright(gc))
   up.reply(`Sayōnara ${user.username ? "@" + user.username : fname} 👋`)
 })
@@ -78,27 +124,67 @@ bot.command("start", async(ctx) => {
 
 bot.on("callback_query", async(ctx) => {
   global.tele = require("./lib/tele")
+  if(ctx?.callbackQuery?.data == "wnext") {
+    let { data } = await axios("https://waifu.pics/api/sfw/waifu")
+    let markup = Markup.inlineKeyboard([
+      Markup.button.callback("Next", "wnext"),
+      Markup.button.callback("Delete", "d")
+    ])
+    console.log(data)
+
+    try {
+      await ctx.editMessageMedia({
+        "type": "photo",
+        "media": data.url,
+        "caption": `Source: ${data.url}`
+      }, {
+        ...markup
+      })
+    } catch(e) {
+      console.log(e)
+    }
+  } else ctx.deleteMessage()
   let Command = fs.readdirSync("./cmd/").filter(v => !v.startsWith(".")).map(v => require(`./cmd/${v}`))
   let { callbackQuery: click } = ctx
   let { from, message } = click
   let user = tele.getUser(from)
 
   let is = {
+    registered: !!global.db.data.users[from?.id],
     group: message?.chat?.type == "supergroup",
+    admin: await message?.from?.isAdmin,
     owner: ownerId.includes(from?.id)
   }
 
-  let command = click.data
+  let command = click.data.split(" ")[0]
+  let text = click.data.split(" ")
+  text.shift()
+  text = text.join(" ")
   let cmd = Command.filter(v => v.help.includes(command))[0]
-  let text = command
-  if(!cmd) {
-    ctx.reply("Perintah itu tidak ada!")
-  } else {
+  if(cmd) {
     if(cmd.owner) {
       if(is.owner) {
         cmd.start(ctx, { Telegram: new Telegram(token), user, message, text, is })
       } else {
-        ctx.reply("Hanya owner bot yang dapat menggunakan perintah itu!")
+        ctx.reply("[❌] Hanya owner bot yang dapat menggunakan perintah itu!")
+      }
+    } else if(cmd.group) {
+      if(is.group) {
+        if(cmd.admin) {
+          if(is.admin) {
+            cmd.start(ctx, { Telegram: new Telegram(token), user, message, text: text.split(" ").slice(1).join(" "), is })
+          } else {
+            ctx.reply("[❌] Hanya admin yang dapat menggunakan perintah itu!")
+          }
+        }
+      } else {
+        ctx.reply("[❌] Perintah hanya dapat digunakan di grup!")
+      }
+    } else if(cmd.registered) {
+      if(is.registered) {
+        cmd.start(ctx, { Telegram: new Telegram(token), user, message, text, is })
+      } else {
+        ctx.reply("[❌] Hanya user terdaftar yang dapat menggunakan perintah itu!")
       }
     } else cmd.start(ctx, { Telegram: new Telegram(token), user, message, text, is })
   }
@@ -110,15 +196,32 @@ bot.on("message", async(ctx) => {
   global.simple = require("./lib/simple")
   let Command = fs.readdirSync("./cmd/").filter(v => !v.startsWith(".")).map(v => require(`./cmd/${v}`))
 
-  simple(ctx)
+  await simple(ctx)
 
   let user = tele.getUser(ctx.message.from)
   let { message } = ctx
   let { text, caption } = message
+  text = text || caption
+  if((text || "").startsWith("=>")) text = text.replace("=>", "/eval return")
+  if((text || "").startsWith(">")) text = text.replace(">", "/eval")
   let is = {
-    cmd: (text || "").startsWith(prefix),
+    registered: !!global.db.data.users[message?.from?.id],
     group: message?.chat?.type == "supergroup",
-    owner: ownerId.includes(message?.from?.id)
+    admin: await message?.from?.isAdmin,
+    owner: ownerId.includes(message?.from?.id),
+    cmd: (text || "").startsWith(prefix)
+  }
+
+  if(is.group) {
+    if(!db.data.group[message.chat.id]) db.data.group[message.chat.id] = {}
+    if(!db.data.group[message.chat.id].member) db.data.group[message.chat.id].member = []
+    if(!db.data.group[message.chat.id].member.includes(message.from.username)) db.data.group[message.chat.id].member.push(message.from.username)
+  }
+
+  if(is.registered) {
+    let user = db.data.users[message?.from?.id]
+
+    if(!user.limit) user.limit = 50
   }
 
   // Ini buat dapatin id telegram :v
@@ -128,22 +231,41 @@ bot.on("message", async(ctx) => {
   let command = ((text || "").startsWith(prefix) ? (text || "").replace(prefix, "") : (text || "")).split(" ")[0].replace("@" + bot.botInfo.username, "")
   if(is.cmd) {
     let cmd = Command.filter(v => v.help.includes(command))[0]
-    if(!cmd) {
-      ctx.reply("Perintah itu tidak ada!")
-    } else {
+    if(cmd) {
       if(cmd.owner) {
         if(is.owner) {
-          cmd.start(ctx, { Telegram: new Telegram(token), user, message, text, is })
+          cmd.start(ctx, { Telegram: new Telegram(token), user, message, text: text.split(" ").slice(1).join(" "), is })
         } else {
-          ctx.reply("Hanya owner bot yang dapat menggunakan perintah itu!")
+          ctx.reply("[❌] Hanya owner bot yang dapat menggunakan perintah itu!")
         }
-      } else cmd.start(ctx, { Telegram: new Telegram(token), user, message, text, is })
+      } else if(cmd.group) {
+        if(is.group) {
+          if(cmd.admin) {
+            if(is.admin) {
+              cmd.start(ctx, { Telegram: new Telegram(token), user, message, text: text.split(" ").slice(1).join(" "), is })
+            } else {
+              ctx.reply("[❌] Hanya admin yang dapat menggunakan perintah itu!")
+            }
+          }
+        } else {
+          ctx.reply("[❌] Perintah hanya dapat digunakan di grup!")
+        }
+      } else if(cmd.registered) {
+        if(is.registered) {
+          cmd.start(ctx, { Telegram: new Telegram(token), user, message, text: text.split(" ").slice(1).join(" "), is })
+        } else {
+          ctx.reply("[❌] Hanya user terdaftar yang dapat menggunakan perintah itu!")
+        }
+      } else cmd.start(ctx, { Telegram: new Telegram(token), user, message, text: text.split(" ").slice(1).join(" "), is })
     }
   }
   if(message.pinned_message) ctx.reply("pesan yang disematkan terdeteksi")
   else logger.custom("cyan", is.cmd ? "COMMAND" : "MESSAGE", `From ${user.username ? "@" + user.username : user.full_name} to ${is.group ? message.chat.title : "Private Chat"} ${chalk.cyan(message.contact ? ((message.contact.vcard ? "👨👨" : "👨") + " " + (message.contact.first_name + (message.contact.last_name || ""))) : message.sticker ? (message.sticker.emoji + " " + message.sticker.set_name) : message.document ? ("📄 " + message.document.file_name + " (" + message.document.mime_type + ")") : message.location ? (message.location.latitude + ", " + message.location.longitude) : message.poll ? ("[poll_" + message.poll.type + "] " + message.poll.id) : message.audio ? ("🎵 " + message.audio.file_name + " (" + parseSeconds(message.audio.duration) + ")") : message.voice ? ("🎤 " + parseSeconds(message.voice.duration)) : message.video_note ? ("[video_note] " + parseSeconds(message.video_note.duration)) : (text || caption || ""))}`)
 })
 
+bot.on("deleted", console.log)
+bot.on("poll", (ctx) => console.log("Poll update", ctx.poll))
+bot.on("poll_answer", (ctx) => console.log("Poll answer", ctx.pollAnswer))
 
 bot.launch().catch((err) => {
   if(err.response.error_code == 404) return logger.ERROR("Cannot use tokens! Maybe the token is corrupt or invalid")
@@ -162,7 +284,13 @@ bot.telegram.getMe().then((result) => {
   console.log("\n\n\n")
 })
 
-
-
-process.once("SIGINT", () => bot.stop("SIGINT"))
-process.once("SIGTERM", () => bot.stop("SIGTERM"))
+process.once("SIGINT", async function() {
+  await db.save()
+  bot.stop("SIGINT")
+  process.exit()
+})
+process.once("SIGTERM", async function() {
+  await db.save()
+  bot.stop("SIGTERM")
+  process.exit()
+})

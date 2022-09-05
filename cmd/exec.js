@@ -1,15 +1,12 @@
 module.exports = {
   start: async function(ctx, { Telegram, user, message, text, is }) {
-    if(text == "/exec") text = "echo \"workas\""
-    text = text.replace("/exec ", "")
+    if(!text) text = "echo \"workas\""
     let util = require("util")
     let { exec } = require("child_process")
-    let result
     exec(text, function(err, stdout, stderr) {
-      if(err) result = err
-      if(stdout) result = stdout
-      if(stderr) result = stderr
-      ctx.reply(util.format(result))
+      if(err) ctx.reply(err)
+      if(stdout) ctx.reply(stdout)
+      if(stderr) ctx.reply(stderr)
     })
   },
   owner: true,

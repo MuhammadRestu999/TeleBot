@@ -4,6 +4,7 @@
 - [Instalasi](#instalasi)
 - [config.json](#config)
 - [Video Tutorial](#tutorial)
+- [Contoh kode](#contoh)
 - [Menjalankan bot](#menjalankan-bot)
 <br><br><br><br><br>
 ## Deskripsi
@@ -70,6 +71,57 @@ Edit file config.json :
 <br><br><br><br><br>
 ## Tutorial
 [![YouTube](https://img.youtube.com/vi/t_qWtyYNWDw/0.jpg)](https://www.youtube.com/watch?v=t_qWtyYNWDw)
+
+<br><br><br><br><br>
+## Contoh
+Membalas pesan :
+```javascript
+ctx.reply("Hello World")
+```
+<br><br>
+Membalas pesan dengan foto :
+```javascript
+// Url
+await ctx.replyWithPhoto("https://static.zerochan.net/Misaki.Mei.full.1315931.jpg")
+
+// Buffer
+await ctx.replyWithPhoto({
+  source: fs.readFileSync("misaki_mei.png")
+})
+
+// File
+await ctx.replyWithPhoto({
+  source: "misaki_mei.png"
+})
+
+// Dengan caption
+await ctx.replyWithPhoto("https://static.zerochan.net/Misaki.Mei.full.1315931.jpg", {
+  caption: "Misaki Mei"
+})
+
+// Album
+await ctx.replyWithMediaGroup([
+  {
+    media: "https://static.zerochan.net/Misaki.Mei.full.1315931.jpg",
+    caption: "Dari URL",
+    type: "photo"
+  },
+  {
+    media: {
+      source: fs.readFileSync("MisakiMei_1.png")
+    },
+    caption: "Dari Buffer",
+    type: "photo"
+  },
+  {
+    media: {
+      source: "MisakiMei_2.png"
+    },
+    caption: "Dari File",
+    type: "photo"
+  }
+])
+```
 
 <br><br><br><br><br>
 ## Menjalankan bot

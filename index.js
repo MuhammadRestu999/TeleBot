@@ -1,6 +1,6 @@
 const { Telegraf, Telegram, Markup } = require("telegraf")
 const chalk = require("chalk")
-const { logger, clockString, parseSeconds, sleep } = require("./lib/function")
+const ft = require("./lib/function")
 const fs = require("fs")
 const os = require("os")
 const util = require("util")
@@ -9,12 +9,18 @@ const fetch = require("node-fetch")
 const FormData = require("form-data")
 const cheerio = require("cheerio")
 const jsdom = require("jsdom")
+const express = require("express")
 
 const { token, owner, ownerLink, ownerId, version, prefix } = JSON.parse(fs.readFileSync("./config.json"))
+const { logger, clockString, parseSeconds, sleep, getAge } = ft
+
+const app = express()
+app.get("/", (req, res) => res.send("Hello world"))
 
 global.Markup = Markup
 global.Telegram = Telegram
 global.Telegraf = Telegraf
+global.ft = ft
 global.fs = fs
 global.util = util
 global.axios = axios
@@ -22,11 +28,15 @@ global.fetch = fetch
 global.FormData = FormData
 global.cheerio = cheerio
 global.jsdom = jsdom
-global.db = JSON.parse(fs.readFileSync("db.json"))
+global.express = express
+global.app = app
+global.db = {
+  data: JSON.parse(fs.readFileSync("db.json"))
+}
 db.save = function() {
   return new Promise((res, rej) => {
     logger.custom("cyan", "DB", "Saving database")
-    fs.writeFile("db.json", JSON.stringify({ data: db.data }, null, 2), (e) => {
+    fs.writeFile("db.json", JSON.stringify(db.data, null, 2), (e) => {
       if(e) {
         logger.ERROR("[DB] Error")
         console.log(e)
@@ -130,7 +140,6 @@ bot.on("callback_query", async(ctx) => {
       Markup.button.callback("Next", "wnext"),
       Markup.button.callback("Delete", "d")
     ])
-    console.log(data)
 
     try {
       await ctx.editMessageMedia({
@@ -222,6 +231,14 @@ bot.on("message", async(ctx) => {
     let user = db.data.users[message?.from?.id]
 
     if(!user.limit) user.limit = 50
+    if(!user.lastUltah) user.lastUltah = 0
+
+    if(user.lahir && getAge(user.lahir).isBirthday && user.lastUltah != new Date().getFullYear()) {
+      await ctx.reply(`Happy birthday ${user.nama}! 🎂🎉\n\nHadiah ultah :\n+ 500.000 Uang 💰\n+ 100 Limit 🎫`)
+      user.uang += 500000
+      user.limit += 100
+      user.lastUltah = new Date().getFullYear()
+    }
   }
 
   // Ini buat dapatin id telegram :v

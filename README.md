@@ -32,6 +32,10 @@ git clone https://github.com/MuhammadRestu999/TeleBot
 cd TeleBot
 npm install
 ```
+<br><br>
+Deploy ke heroku :
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/MuhammadRestu999/TeleBot)
+
 <br><br><br><br><br>
 ## Config
 Edit file config.json :

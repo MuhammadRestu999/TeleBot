@@ -278,7 +278,7 @@ bot.on("callback_query", async(ctx) => {
   }
 
   let is = {
-    registered: !!global.db.data.users[from?.id].nama,
+    registered: !!global?.db?.data?.users[from?.id]?.nama,
     group: message?.chat?.type?.includes?.("group"),
     admin: await message?.from?.isAdmin,
     owner: ownerId.includes(from?.id)
@@ -316,7 +316,7 @@ bot.on(["message", "edited_message"], async(ctx) => {
   if((text || "").startsWith(">")) text = text.replace(">", "/eval")
   if((text || "").startsWith("$")) text = text.replace("$", "/exec")
   let is = {
-    registered: !!global.db.data.users[message?.from?.id]?.nama,
+    registered: !!global?.db?.data?.users?.[message?.from?.id]?.nama,
     group: message?.chat?.type == "supergroup",
     admin: await message?.from?.isAdmin,
     owner: ownerId.includes(message?.from?.id),

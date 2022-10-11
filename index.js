@@ -17,6 +17,9 @@ const { logger, clockString, parseSeconds, sleep, getAge } = ft
 
 const app = express()
 app.get("/", (req, res) => res.send("Hello world"))
+app.listen(3333)
+
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"
 
 global.Markup = Markup
 global.Telegram = Telegram
@@ -251,7 +254,7 @@ bot.on("callback_query", async(ctx) => {
   let { from, message } = click
   let user = tele.getUser(from)
 
-  if(click == "wnext") {
+  if(click.data == "wnext") {
     let { data } = await axios("https://waifu.pics/api/sfw/waifu")
     let markup = Markup.inlineKeyboard([
       Markup.button.callback("Next", "wnext"),

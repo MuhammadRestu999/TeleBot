@@ -1,6 +1,7 @@
 module.exports = {
   start: async function(ctx, { Telegram, user, message, text, is }) {
     if(!text) return ctx.reply("Cara penggunaan : /play Judul lagu\n\nContoh penggunaan : /play Hanya Rindu")
+    await ctx.reply("⏳| Silahkan tunggu")
     let { parseSeconds } = require("../lib/function")
     let { Markup } = require("telegraf")
     let yts = require("yt-search")

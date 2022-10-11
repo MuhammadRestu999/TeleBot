@@ -1,7 +1,7 @@
 module.exports = {
   start: async function(ctx, { Telegram, user, message, text, is }) {
     if(!text) text = "echo \"workas\""
-    await ctx.reply("Executing...")
+    await ctx.reply("⏳| Silahkan tunggu")
     let util = require("util")
     let { exec } = require("child_process")
     exec(text, async function(err, stdout, stderr) {

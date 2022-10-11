@@ -1,5 +1,6 @@
 module.exports = {
   start: async function(ctx, { Telegram, user, message, text, is }) {
+    await ctx.reply("⏳| Silahkan tunggu")
     const addZero = n => (n+"").padStart(2, "0")
     let { tiktok } = require("../lib/scrape")
     let ttr = /(@[a-zA-z0-9\_]*|.*)(\/.*\/|trending.?shareId=)([\d]*)/gm

@@ -3,7 +3,7 @@ module.exports = {
     let util = require("util")
     try {
       let result = util.format(await eval(`(async() => { ${text};\n })()`))
-      await ctx.reply(result)
+      await ctx.reply(result || "**No Result**")
     } catch(err) {
       try {
         await ctx.reply(err.stack)

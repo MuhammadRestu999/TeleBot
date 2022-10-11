@@ -28,7 +28,7 @@ module.exports = {
       return list[Math.floor(Math.random() * list.length)]
     }
   },
-  registered: false,
+  registered: true,
   tags: "money",
   help: ["judi"],
   desc: "Judi"

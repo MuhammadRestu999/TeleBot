@@ -2,17 +2,19 @@ module.exports = {
   start: async function(ctx, { Telegram, user, message, text, is }) {
     let levelling = require("../lib/levelling")
     let users = global.db.data.users[user.id]
+    let before = user.level
+
     if(!levelling.canLevelUp(users.level, users.exp, 39)) {
       let { min, max } = levelling.xpRange(users.level, users.exp, 39)
-      return ctx.replyWithMarkdown(`
+      return await ctx.replyWithMarkdown(`
 Level *${users.level} (${users.exp}/${max})*
 Kurang *${min} XP* lagi!
 `.trim())
     }
-    users.level++
-    ctx.replyWithMarkdown(`
+    while(levelling.canLevelUp(users.level, users.exp, 39)) users.level++
+    await ctx.replyWithMarkdown(`
 Selamat, anda telah naik level!
-*${users.level - 1}* -> *${users.level}*
+*${before}* -> *${users.level}*
   `.trim())
   },
   registered: true,

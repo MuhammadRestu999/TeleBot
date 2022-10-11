@@ -8,6 +8,9 @@ module.exports = {
         for(let j of i.help) arr.push({ command: j, description: i.desc })
       } else arr.push({ command: i.help[0], description: i.desc })
     }
+    let now = await Telegram.getMyCommands()
+    if(now.length == arr.length && now.every((v, i) => arr[i].command == v.command && arr[i].description == v.description)) return await ctx.reply("Sudah terbaru")
+
     let res = false
     try {
       res = await Telegram.setMyCommands(arr)

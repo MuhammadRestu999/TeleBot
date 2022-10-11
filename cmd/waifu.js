@@ -5,9 +5,7 @@ module.exports = {
       Markup.button.callback("Delete", "d")
     ])
     let { data } = await axios("https://waifu.pics/api/sfw/waifu")
-    ctx.replyWithPhoto({
-      source: data.url
-    }, {
+    ctx.replyWithPhoto(data.url, {
       "caption": `Source: ${data.url}`,
       ...markup
     })

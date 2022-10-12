@@ -272,13 +272,12 @@ bot.on("callback_query", async(ctx) => {
     } catch(e) {
       console.log(e)
     }
-    return
   } else {
     if(click.data != "owner" && click.data != "medsos" && click.data != "donate") ctx.deleteMessage().catch(v => 0)
   }
 
   let is = {
-    registered: !!global?.db?.data?.users[from?.id]?.nama,
+    registered: !!global?.db?.data?.users?.[from?.id]?.nama,
     group: message?.chat?.type?.includes?.("group"),
     admin: await message?.from?.isAdmin,
     owner: ownerId.includes(from?.id)
@@ -295,7 +294,7 @@ bot.on("callback_query", async(ctx) => {
     if(cmd.registered && !is.registered) return await dfail(ctx, "registered")
     if(cmd.group && !is.group) return await dfail(ctx, "group")
     if(cmd.admin && !is.admin) return await dfail(ctx, "admin")
-    if(cmd.owner && !is.admin) return await dfail(ctx, "admin")
+    if(cmd.owner && !is.owner) return await dfail(ctx, "admin")
 
     await cmd.start(ctx, { Telegram: new Telegram(token), user, message, text, is })
   }
@@ -316,7 +315,7 @@ bot.on(["message", "edited_message"], async(ctx) => {
   if((text || "").startsWith(">")) text = text.replace(">", "/eval")
   if((text || "").startsWith("$")) text = text.replace("$", "/exec")
   let is = {
-    registered: !!global?.db?.data?.users?.[message?.from?.id]?.nama,
+    registered: !!global.db.data.users[message?.from?.id]?.nama,
     group: message?.chat?.type == "supergroup",
     admin: await message?.from?.isAdmin,
     owner: ownerId.includes(message?.from?.id),
@@ -361,7 +360,7 @@ bot.on(["message", "edited_message"], async(ctx) => {
     if(cmd.registered && !is.registered) return await dfail(ctx, "registered")
     if(cmd.group && !is.group) return await dfail(ctx, "group")
     if(cmd.admin && !is.admin) return await dfail(ctx, "admin")
-    if(cmd.owner && !is.admin) return await dfail(ctx, "admin")
+    if(cmd.owner && !is.owner) return await dfail(ctx, "owner")
 
     await cmd.start(ctx, { Telegram: new Telegram(token), user, message, text: text.split(" ").slice(1).join(" "), is })
   }

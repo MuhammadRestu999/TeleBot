@@ -59,16 +59,21 @@ Edit file config.json :
     <td>Tidak</td>
   </tr>
   <tr>
+  <tr>
+    <td>Id Owner</td>
+    <td>4 26</td>
+    <td>Masukkan id owner ke sini</td>
+    <td>Tidak </td>
+  </tr>
     <td>Tautan Owner</td>
-    <td>4 96</td>
+    <td>5 43</td>
     <td>Masukkan tautan owner ke sini (https://t.me/username)</td>
     <td>Tidak</td>
   </tr>
-  <tr>
-    <td>Id Owner</td>
-    <td>5 122</td>
-    <td>Masukkan id owner ke sini</td>
-    <td>Tidak </td>
+    <td>Nomor Owner</td>
+    <td>6 31</td>
+    <td>Masukkan nomor hp owner ke sini (628XXXXXXXXXX)</td>
+    <td>Tidak</td>
   </tr>
 </table>
 

@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx) {
     let Restu = [{ type: "Telegram", value: "https://t.me/MuhammadRestu" }, { type: "Facebook", value: "https://m.facebook.com/mohamad.restu.71" }, { type: "Instagram", value: "https://www.instagram.com/_muhammad.restu_" }]
 
     let list = [Restu]

@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx, { Telegram }) {
     let fs = require("fs")
     let Command = fs.readdirSync("./cmd/").filter(v => !v.startsWith(".")).map(v => require(`./${v}`))
     let arr = []

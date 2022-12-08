@@ -1,8 +1,9 @@
 {
   "token": "MASUKAN TOKEN BOT",
   "owner": "Restu",
+  "ownerId": "956679874",
   "ownerLink": "https://t.me/MuhammadRestu",
-  "ownerId": [956679874],
-  "version": [0, 0, 5],
+  "ownerPhone": "6285783417029",
+  "version": [0, 5, 0],
   "prefix": "/"
 }

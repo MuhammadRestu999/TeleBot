@@ -1,3 +1,7 @@
 {
-  "ignore": ["db.json"]
+  "ignore": [
+    "db.json",
+    "db_backup.json",
+    "cmd/*"
+  ]
 }

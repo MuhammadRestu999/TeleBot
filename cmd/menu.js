@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx, { Telegram }) {
     let { prefix } = require("../config.json")
     let { clockString } = require("../lib/function")
     let fs = require("fs")

@@ -1,9 +1,9 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx) {
     let res = await ctx.getChat(ctx.chat.id)
     let str = `
-${"=".repeat(10)}**Group Info**${"=".repeat(10)}\n
-ID : \`\`\`${res.id}\`\`\`
+${"=".repeat(10)}<b>Group Info</b>${"=".repeat(10)}\n
+ID : <pre>${res.id}</pre>
 Name : ${res.title}
 Type : ${res.type}${res.invite_link ? "\nLink : " + res.invite_link : ""}
 Member can :
@@ -16,7 +16,7 @@ Member can :
   Invite users : ${res.permissions.can_invite_users ? "Yes" : "No"}
   Pin message : ${res.permissions.can_pin_message ? "Yes" : "No"}
 `.trim()
-    ctx.replyWithMarkdown(str)
+    ctx.replyWithHTML(str)
   },
   admin: true,
   group: true,

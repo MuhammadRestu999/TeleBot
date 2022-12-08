@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx, { user }) {
     if(!("lastBansos" in global.db.data.users[user.id])) global.db.data.users[user.id].lastBansos = 0
     const { clockString } = require("../lib/function")
     let Bot = Math.floor(Math.random() * 96)

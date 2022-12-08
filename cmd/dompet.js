@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx, { user, is }) {
     let { getAge, formatMoney } = require("../lib/function")
     let levelling = require("../lib/levelling")
     let isOwner = is.owner

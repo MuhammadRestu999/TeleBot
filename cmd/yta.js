@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx, { text }) {
     let args = text.split(" ")
     let { servers, yta, ytIdRegex  } = require("../lib/y2mate")
     let server = "id4"

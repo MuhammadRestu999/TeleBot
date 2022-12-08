@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx, { text }) {
     if(!text) text = "echo \"workas\""
     await ctx.reply("⏳| Silahkan tunggu")
     let util = require("util")

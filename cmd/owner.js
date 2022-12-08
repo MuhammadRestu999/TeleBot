@@ -1,14 +1,12 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
-    let { ownerId } = require("../config.json")
-    let owner = []
-    for(let i of ownerId) {
-      let res = await Telegram.getChat(i)
-      owner.push({ name: (res.first_name.toLowerCase() != "muhammad" ? res.first_name : res.last_name), username: res.username })
+  start: async function(ctx, { Telegram }) {
+    let { ownerPhone, ownerId } = require("../config.json")
+    let res = await Telegram.getChat(ownerId)
+    let owner = {
+      name: (res.first_name.toLowerCase() != "muhammad" ? res.first_name : res.last_name),
+      phone: ownerPhone
     }
-    let str = "List owner :\n\n"
-    for(let i in owner) str += `${String(i + 1).padStart(owner.length, "0")}. [${owner[i].name}](https://t.me/${owner[i].username})`
-    ctx.replyWithMarkdown(str, { disable_web_page_preview: true })
+    await ctx.replyWithContact(owner.phone, owner.name)
   },
   tags: "main",
   help: ["owner"],

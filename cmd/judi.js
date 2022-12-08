@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx, { text }) {
     try {
       let users = global.db.data.users[user.id]
       let Aku = Math.floor(Math.random() * 91)

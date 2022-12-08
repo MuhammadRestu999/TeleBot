@@ -1,5 +1,6 @@
 const { Telegraf, Telegram, Markup } = require("telegraf")
 const chalk = require("chalk")
+const cp = require("child_process")
 const ft = require("./lib/function")
 const fs = require("fs")
 const os = require("os")
@@ -11,6 +12,8 @@ const cheerio = require("cheerio")
 const jsdom = require("jsdom")
 const crypto = require("crypto")
 const express = require("express")
+
+const otakudesu = require("./lib/otakudesu")
 
 const { token, owner, ownerLink, ownerId, version, prefix } = JSON.parse(fs.readFileSync("./config.json"))
 const { logger, clockString, parseSeconds, sleep, getAge } = ft
@@ -33,7 +36,9 @@ global.FormData = FormData
 global.cheerio = cheerio
 global.jsdom = jsdom
 global.crypto = crypto
+global.otakudesu = otakudesu
 global.express = express
+global.exec = cp.exec
 global.app = app
 try {
   global.db = {
@@ -120,10 +125,14 @@ watch("./lib/simple.js", () => { global.simple = require("./lib/simple") }, fals
 
 if(token == "") return logger.ERROR("Tokens cannot be empty!")
 
+const isSelf = process.argv.includes("--self")
+
 const bot = new Telegraf(token)
 global.bot = bot
 
 bot.on("new_chat_members", async(up) => {
+  if(isSelf) return
+
   global.tele = require("./lib/tele")
   let { message } = up
 
@@ -140,6 +149,8 @@ bot.on("new_chat_members", async(up) => {
   }
 })
 bot.on("left_chat_member", async(up) => {
+  if(isSelf) return
+
   global.tele = require("./lib/tele")
   let { message } = up
 
@@ -157,6 +168,8 @@ bot.on("left_chat_member", async(up) => {
 })
 
 bot.command("start", async(ctx) => {
+  if(isSelf) return
+
   global.tele = require("./lib/tele")
   global.simple = require("./lib/simple")
   await simple(ctx)
@@ -280,7 +293,7 @@ bot.on("callback_query", async(ctx) => {
     registered: !!global?.db?.data?.users?.[from?.id]?.nama,
     group: message?.chat?.type?.includes?.("group"),
     admin: await message?.from?.isAdmin,
-    owner: ownerId.includes(from?.id)
+    owner: ownerId == from?.id
   }
 
   let command = click.data.split(" ")[0]
@@ -288,6 +301,8 @@ bot.on("callback_query", async(ctx) => {
   text.shift()
   text = text.join(" ")
   logger.custom("cyan", "CALLBACK", `From ${user.username ? "@" + user.username : user.full_name} ${chalk.cyan(click.data)}`)
+
+  if(isSelf && !is.owner) return
 
   let cmd = Command.filter(v => v.help.includes(command))[0]
   if(cmd) {
@@ -301,6 +316,8 @@ bot.on("callback_query", async(ctx) => {
 })
 
 bot.on(["message", "edited_message"], async(ctx) => {
+  console.log(ctx.chat.type)
+
   global.tele = require("./lib/tele")
   global.simple = require("./lib/simple")
   let Command = fs.readdirSync("./cmd/").filter(v => !v.startsWith(".")).map(v => require(`./cmd/${v}`))
@@ -318,9 +335,11 @@ bot.on(["message", "edited_message"], async(ctx) => {
     registered: !!global.db.data.users[message?.from?.id]?.nama,
     group: message?.chat?.type == "supergroup",
     admin: await message?.from?.isAdmin,
-    owner: ownerId.includes(message?.from?.id),
+    owner: ownerId == message?.from?.id,
     cmd: (text || "").startsWith(prefix)
   }
+
+  if(isSelf && !is.owner) return
 
   if(is.group) {
     if(!db.data.group[message.chat.id]) db.data.group[message.chat.id] = {}
@@ -362,12 +381,69 @@ bot.on(["message", "edited_message"], async(ctx) => {
     if(cmd.admin && !is.admin) return await dfail(ctx, "admin")
     if(cmd.owner && !is.owner) return await dfail(ctx, "owner")
 
-    await cmd.start(ctx, { Telegram: new Telegram(token), user, message, text: text.split(" ").slice(1).join(" "), is })
+    try {
+      await cmd.start(ctx, { Telegram: new Telegram(token), user, message, text: text.split(" ").slice(1).join(" "), is })
+    } catch(err) {
+      await ctx.reply(err.stack)
+    }
   }
 })
 
+bot.on("inline_query", async function(ctx) {
+  const { query } = ctx.inlineQuery
+  let res
+  let result
+  try {
+    res = await otakudesu.search(query)
+    if(res[0]) result = res
+      .map(({ thumbnail, title, url, id, genre, status, rating }) => ({
+        type: "article",
+        id,
+        title,
+        cache_time: 0,
+        description: `Genre : ${genre.map(v => v.name).join(", ")}\nStatus : ${status}\nScore : ${rating}`,
+        thumb_url: thumbnail,
+        input_message_content: {
+          message_text: `
+<b>Title</b>: ${title}
+<b>URL</b>: <a href="${url}">${url}</a>
+<b>Genre</b>: ${genre.map(v => v.name).join(", ")}
+<b>Status</b>: ${status}
+<b>Rating</b>: ${rating}
+`,
+          parse_mode: "HTML"
+        },
+        ...Markup.inlineKeyboard([
+          Markup.button.url("🔗 Go to Otakudesu", url)
+        ])
+      }))
+    else result = [{
+      type: "article",
+      id: "notfound",
+      title: "Anime Not Found",
+      description: `Anime ${query} not found!`,
+      input_message_content: {
+        message_text: `Anime ${query} not found!`
+      }
+    }]
+  } catch(e) {
+    if(e.message === "Enter the anime title!") return
+    result = [{
+      type: "article",
+      id: "error",
+      title: "Error!",
+      cache_time: 0,
+      description: "Click here to see the error",
+      input_message_content: {
+        message_text: `\`\`\`${e.stack}\`\`\``
+      }
+    }]
+  }
+  return await ctx.answerInlineQuery(result)
+})
+
 bot.launch().catch((err) => {
-  if(err.response.error_code == 404) return logger.ERROR("Cannot use tokens! Maybe the token is corrupt or invalid")
+  if(err?.response?.error_code == 404) return logger.ERROR("Cannot use tokens! Maybe the token is corrupt or invalid")
   throw err
 })
 bot.telegram.getMe().then((result) => {
@@ -386,10 +462,12 @@ bot.telegram.getMe().then((result) => {
 process.once("SIGINT", async function() {
   await db.save()
   bot.stop("SIGINT")
+  console.log("SIGINT")
   process.exit()
 })
 process.once("SIGTERM", async function() {
   await db.save()
   bot.stop("SIGTERM")
+  console.log("SIGTERM")
   process.exit()
 })

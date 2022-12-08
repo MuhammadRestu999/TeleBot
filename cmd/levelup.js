@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx, { user }) {
     let levelling = require("../lib/levelling")
     let users = global.db.data.users[user.id]
     let before = user.level

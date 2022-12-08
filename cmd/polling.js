@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, text }) {
+  start: async function(ctx, { text }) {
     if(!text) return await ctx.reply("Penggunaan :\n/polling <judul>|<pilihan ganda>|<...konten>\n\nContoh :\n/polling Ini contoh|off|Nomor 1|Nomor 2|Nomor 3")
 
     let [judul, multipile, ...konten] = text.split("|")
@@ -18,7 +18,6 @@ module.exports = {
     global.db.data.group[ctx.message.chat.id].polls[poll.message_id] = ctx.from.id
     await ctx.reply(`Berhasil menciptakan polling\n\nID Polling : ${poll.message_id}`)
   },
-  owner: true,
   admin: true,
   group: true,
   tags: "group",

@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx, { text }) {
     await ctx.reply("⏳| Silahkan tunggu")
     const addZero = n => (n+"").padStart(2, "0")
     let { tiktok } = require("../lib/scrape")

@@ -1,6 +1,6 @@
 module.exports = {
-  start: async function(ctx, { Telegram, message, text }) {
-    let user = global.db.data.users[message.from.id]
+  start: async function(ctx, { text }) {
+    let user = global.db.data.users[ctx.from.id]
     if(user.ref_code) return await ctx.reply(`Kamu sudah memiliki kode referral!
 https://t.me/MuhammadRestu_bot?start=${user.ref_code}`)
 

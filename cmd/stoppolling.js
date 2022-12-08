@@ -14,7 +14,6 @@ ${info.options.map(v => "Nama: " + v.text + "\nPemilih: " + v.voter_count).join(
 ====================
 `.trim())
   },
-  owner: true,
   admin: true,
   group: true,
   tags: "group",

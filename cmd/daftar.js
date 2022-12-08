@@ -1,6 +1,6 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
-    if(global.db.data.users[ctx.from.id]) return ctx.reply("Anda sudah terdaftar!")
+  start: async function(ctx, { user, text }) {
+    if(global.db.data.users[user.id]?.sn) return ctx.reply("Anda sudah terdaftar!")
 
     let [nama, lahir] = text.split("|")
     if(!nama || !lahir || new Date(lahir) == "Invalid Date" || (Date.now() - new Date(lahir)) < (1000*60*60*24*30*12*5)) return ctx.reply(`Contoh :\n${message.text.split(" ")[0]} Restu|2008-11-08`)
@@ -8,8 +8,8 @@ module.exports = {
     let crypto = require("crypto")
     let { getAge } = require("../lib/function")
 
-    let sn = crypto.createHash("md5").update(String(ctx.from.id)).digest("hex")
-    global.db.data.users[ctx.from.id] = {
+    let sn = crypto.createHash("md5").update(String(user.id)).digest("hex")
+    global.db.data.users[user.id] = {
       sn,
       nama,
       lahir,

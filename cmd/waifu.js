@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { Telegram, user, message, text, is }) {
+  start: async function(ctx) {
     let markup = Markup.inlineKeyboard([
       Markup.button.callback("Next", "wnext"),
       Markup.button.callback("Delete", "d")

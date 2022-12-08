@@ -1,4 +1,4 @@
-# TeleBot
+# TeleBot_private
 ## Daftar isi
 - [Deskripsi](#deskripsi)
 - [Instalasi](#instalasi)
@@ -8,18 +8,18 @@
 - [Menjalankan bot](#menjalankan-bot)
 <br><br><br><br><br>
 ## Deskripsi
-TeleBot adalah skrip bot Telegram yang menggunakan NodeJS dan modul [telegraf](https://telegraf.js.org)
+TeleBot_private adalah skrip bot Telegram yang menggunakan NodeJS dan modul [telegraf](https://telegraf.js.org)
 <br><br><br><br><br>
 ## Instalasi
-Cara menginstal TeleBot
+Cara menginstal TeleBot_private
 <br><br>
 Di Termux :
 ```bash
 pkg update -y
 pkg upgrade -y
 pkg install nano git nodejs-lts -y
-git clone https://github.com/MuhammadRestu999/TeleBot
-cd TeleBot
+git clone https://github.com/MuhammadRestu999/TeleBot_private
+cd TeleBot_private
 npm install
 ```
 <br><br>
@@ -28,13 +28,13 @@ Di Ubuntu, VPS/RDP, etc :
 apt update -y
 apt upgrade -y
 apt install nano git nodejs-lts -y
-git clone https://github.com/MuhammadRestu999/TeleBot
-cd TeleBot
+git clone https://github.com/MuhammadRestu999/TeleBot_private
+cd TeleBot_private
 npm install
 ```
 <br><br>
 Deploy ke heroku :
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/MuhammadRestu999/TeleBot)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/MuhammadRestu999/TeleBot_private)
 
 <br><br><br><br><br>
 ## Config

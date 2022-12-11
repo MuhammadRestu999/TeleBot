@@ -131,7 +131,8 @@ await ctx.replyWithMediaGroup([
   }
 ])
 ```
-
+<br><br>
+Untuk send video hanya perlu ganti dibagian "Photo" jadi "Video" type juga diganti dengan "video"
 <br><br><br><br><br>
 ## Menjalankan bot
 Untuk menjalankan bot<br>

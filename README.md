@@ -1,4 +1,4 @@
-# TeleBot_private
+# TeleBot
 ## Daftar isi
 - [Deskripsi](#deskripsi)
 - [Instalasi](#instalasi)

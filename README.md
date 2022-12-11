@@ -8,7 +8,7 @@
 - [Menjalankan bot](#menjalankan-bot)
 <br><br><br><br><br>
 ## Deskripsi
-TeleBot_private adalah skrip bot Telegram yang menggunakan NodeJS dan modul [telegraf](https://telegraf.js.org)
+TeleBot adalah skrip bot Telegram yang menggunakan NodeJS dan modul [telegraf](https://telegraf.js.org)
 <br><br><br><br><br>
 ## Instalasi
 Cara menginstal TeleBot

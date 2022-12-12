@@ -2,7 +2,7 @@ const { savefrom } = require("../lib/scrape.js")
 module.exports = {
   start: async function(ctx, { text }) {
     if (!text) return ctx.reply("Contoh penggunaan: /fb https://facebook.com")
-    let res = ( await savefrom(m.text)).url[0]
+    let res = ( await savefrom(text)).url[0]
     let result = await savefrom(text)
    
    let { title, source, duration } = result.meta

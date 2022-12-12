@@ -1,4 +1,4 @@
-const { youtubeSearch } = require("@bochilteam/scraper")
+const { youtubedl, youtubedlv2, youtubedlv3, youtubeSearch } = require("@bochilteam/scraper")
 
 module.exports = {
   start: async function(ctx, { text }) {

@@ -8,7 +8,9 @@ module.exports = {
    let { title, source, duration } = result.meta
    let { url } = res
 await ctx.reply("⏳| Sedang Diproses...").then(function(msg) {
-   ctx.replyWithVideo({ url: url, filename: title + ".mp4" }, { reply_to_message_id: msg.message_id })
+   ctx.replyWithVideo({ url: url, caption: `${title ? "*Title:* "+ title : "Untitled"}
+${duration ? "*Duration:* " + duration : "null"}
+`, filename: title + ".mp4" }, { reply_to_message_id: msg.message_id })
 })
 },
   tags: "downloader",

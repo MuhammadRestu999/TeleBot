@@ -3,6 +3,7 @@ const { youtubedl, youtubedlv2,  youtubedlv3 } = require("@bochilteam/scraper")
 module.exports = {
   start: async function(ctx, { text }) {
     let args = text.split(" ")
+    let limit = 1000
     let { servers, yta, ytIdRegex  } = require("../lib/y2mate")
 
     if(!args[0]) return ctx.reply("Masukkan url!")

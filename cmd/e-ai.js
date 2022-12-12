@@ -1,8 +1,9 @@
 const { qna } = require("../lib/openai.js")
 module.exports = {
   start: async function(ctx, { text }) {
+if (!text) return ctx.reply("Apa yg ingin dicari")
 let res = await qna(text)
-ctx.reply(res)
+await ctx.reply(res)
   },
   tags: "downloader",
   help: ["ai"],

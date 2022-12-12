@@ -1,14 +1,36 @@
+const { youtubedl, youtubedlv2,  youtubedlv3 } = require("@bochilteam/scraper")
+
 module.exports = {
   start: async function(ctx, { text }) {
     let args = text.split(" ")
     let { servers, yta, ytIdRegex  } = require("../lib/y2mate")
-    let server = "id4"
 
     if(!args[0]) return ctx.reply("Masukkan url!")
     if(!ytIdRegex.test(args[0])) return ctx.reply("Masukkan url YouTube yang valid!")
-    let { dl_link, thumb, title, filesize, filesizeF } = await yta(args[0], server)
-    ctx.replyWithPhoto(thumb, { caption: `Ukuran file: ${filesizeF}\nJudul: ${title}\n\nSedang mengirim audio...` }).then(function(msg) {
-      ctx.replyWithAudio({ url: dl_link, filename: title + ".mp3" }, { reply_to_message_id: msg.message_id })
+    const { thumbnail, audio: _audio, title } = await youtubedl(args[0]).catch(async _ => await youtubedlv2(args[0])).catch(async _ => await youtubedlv3(args[0]))
+  const limitedSize = (limit ? 2000 : limit) * 1024
+  let audio, source, res, link, lastError, isLimit
+  for (let i in _audio) {
+    try {
+      audio = _audio[i]
+      if (isNaN(audio.fileSize)) continue
+      isLimit = limitedSize < audio.fileSize
+      if (isLimit) continue
+      link = await audio.download()
+      if (link) res = await fetch(link)
+      isLimit = res?.headers.get('content-length') && parseInt(res.headers.get('content-length')) < limitedSize
+      if (isLimit) continue
+      if (res) source = await res.arrayBuffer()
+      if (source instanceof ArrayBuffer) break
+    } catch (e) {
+      audio = link = source = null
+      lastError = e
+    }
+  }
+  if ((!(source instanceof ArrayBuffer) || !link || !res.ok) && !isLimit) return ctx.reply( 'Error: ' + (lastError || 'Can\'t download audio'))
+
+    ctx.replyWithPhoto(thumbnail, { caption: `Ukuran file: ${audio.filesizeH}\nJudul: ${title}\n\nSedang mengirim audio...` }).then(function(msg) {
+      ctx.replyWithAudio(url, { filename: title + ".mp3" }, { reply_to_message_id: msg.message_id })
     })
   },
   tags: "downloader",

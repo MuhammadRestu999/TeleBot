@@ -1,4 +1,4 @@
-FROM node:17.1.0
+FROM node:lts-buster
 
 RUN apt-get update && \
   apt-get install -y \

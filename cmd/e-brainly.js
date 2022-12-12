@@ -6,7 +6,7 @@ module.exports = {
     await ctx.reply("⏳| Silahkan tunggu")
 
     const brain = new Brainly("id")
-    const res = await brain.searchWithMT("Apa yang dimaksud Dengan Atom", "id")
+    const res = await brain.searchWithMT(text, "id")
     const teks = `=======[ 🧠Brainly Searching🔍 ]=======
 
 🔍Pencarian Soal Dari 

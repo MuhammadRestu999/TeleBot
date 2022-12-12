@@ -1,4 +1,4 @@
-FROM node:17.1.0
+FROM node:17.9.1
 
 RUN apt-get update && \
   apt-get install -y \

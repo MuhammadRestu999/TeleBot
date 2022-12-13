@@ -30,7 +30,7 @@ module.exports = {
   }
   if ((!(source instanceof ArrayBuffer) || !link || !res.ok) && !isLimit) return ctx.reply( 'Error: ' + (lastError || 'Can\'t download audio'))
 
-    ctx.replyWithPhoto(thumbnail, { caption: `Ukuran file: ${audio.filesizeH}\nJudul: ${title}\n\nSedang mengirim audio...` }).then(function(msg) {
+    ctx.replyWithPhoto(thumbnail, { caption: `Ukuran file: ${audio.fileSizeH}\nJudul: ${title}\n\nSedang mengirim audio...` }).then(function(msg) {
       ctx.replyWithAudio(link, { filename: title + ".mp3" }, { reply_to_message_id: msg.message_id })
     })
   },

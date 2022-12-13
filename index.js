@@ -12,6 +12,7 @@ const cheerio = require("cheerio")
 const jsdom = require("jsdom")
 const crypto = require("crypto")
 const express = require("express")
+const schedule = require("node-schedule")
 
 const otakudesu = require("./lib/otakudesu")
 
@@ -68,9 +69,10 @@ db.save = function() {
     })
   })
 }
-db.interval = setInterval(async function() {
+
+schedule.scheduleJob("db", { seconds: 0 }, async function() {
   await db.save()
-}, 1000*60*1) // Every 1 minute
+})
 
 global.dfail = async function(ctx, type) {
   let fail = {
@@ -285,9 +287,53 @@ bot.on("callback_query", async(ctx) => {
     } catch(e) {
       console.log(e)
     }
+  } else if(click.data?.startsWith?.("TeleBot-ttt")) {
+    const args = click.data.split(" ")
+    if(!isNaN(args[1])) {
+      if(!global.db.tictactoe?.[ctx.chat.id]) return await ctx.deleteMessage().catch(v => 0)
+      if(global.db.tictactoe[ctx.chat.id].p1[0] != from.id && global.db.tictactoe[ctx.chat.id].p2[0] != from.id) return await ctx.answerCbQuery("You can\'t play because you are not the player!", true)
+      if(global.db.tictactoe[ctx.chat.id].turn != ctx.from.id) return await ctx.answerCbQuery("Not your turn")
+      global.db.tictactoe[ctx.chat.id].button.reply_markup.inline_keyboard = global.db.tictactoe[ctx.chat.id].button.reply_markup.inline_keyboard.map(a => a.map(b => ({
+        text: b.text == args[1] ? (from?.id == global.db.tictactoe[ctx?.chat?.id]?.p1?.[0] ? "❌" : from?.id == global.db.tictactoe[ctx?.chat?.id]?.p2?.[0] ? "⭕" : b.text) : b.text,
+        callback_data: `TeleBot-ttt ${b.text == args[1] ? (from?.id == global.db.tictactoe[ctx?.chat?.id]?.p1?.[0] ? "❌" : from?.id == global.db.tictactoe[ctx?.chat?.id]?.p2?.[0] ? "⭕" : b.text) : b.text}`
+      })))
+      global.db.tictactoe[ctx.chat.id].turn = global.db.tictactoe[ctx.chat.id].p1[0] == from.id ? global.db.tictactoe[ctx.chat.id].p2[0] : global.db.tictactoe[ctx.chat.id].p1[0]
+
+      let bawah = `@${global.db.tictactoe[ctx.chat.id].p1[0] == global.db.tictactoe[ctx.chat.id].turn ? global.db.tictactoe[ctx.chat.id].p1[1] : global.db.tictactoe[ctx.chat.id].p2[1]} turn`
+      let _arr = global.db.tictactoe[ctx.chat.id].button.reply_markup.inline_keyboard.map(v => [v[0].text, v[1].text, v[2].text])
+      let arr = []
+
+      for(let i of _arr)
+        for(let j of i)
+          arr.push(j)
+
+
+      let y = [null].concat(arr)
+      let x = "❌"
+      let o = "⭕"
+      let isWin = ((y[1] == x && y[4] == x && y[7] == x) || (y[2] == x && y[5] == x && y[8] == x) || (y[3] == x && y[6] == x && y[9] == x) || (y[1] == x && y[2] == x && y[3] == x) || (y[4] == x && y[5] == x && y[6] == x) || (y[7] == x && y[8] == x && y[9] == x) || (y[1] == x && y[5] == x && y[9] == x) || (y[3] == x && y[5] == x && y[7] == x)) || ((y[1] == o && y[4] == o && y[7] == o) || (y[2] == o && y[5] == o && y[8] == o) || (y[3] == o && y[6] == o && y[9] == o) || (y[1] == o && y[2] == o && y[3] == o) || (y[4] == o && y[5] == o && y[6] == o) || (y[7] == o && y[8] == o && y[9] == o) || (y[1] == o && y[5] == o && y[9] == o) || (y[3] == o && y[5] == o && y[7] == o))
+      console.log(isWin)
+      if(isWin) bawah = `The winner is @${ctx.from.username}\n\n+ 10.000 Money\n+ 3.000 Exp`
+
+      await ctx.editMessageText(`
+⟨[ TicTacToe Games ]⟩
+
+Player 1: @${global.db.tictactoe[ctx.chat.id].p1[1]}
+Player 2: @${global.db.tictactoe[ctx.chat.id].p2[1]}
+
+${bawah}
+`, global.db.tictactoe[ctx.chat.id].button)
+      if(isWin) {
+        global.db.data.users[ctx.from.id].money += 10_000
+        global.db.data.users[ctx.from.id].exp += 3_000
+        delete global.db.tictactoe[ctx.chat.id]
+        return
+      }
+    }
   } else {
-    if(click.data != "owner" && click.data != "medsos" && click.data != "donate") ctx.deleteMessage().catch(v => 0)
+    if(click.data != "owner" && click.data != "medsos" && click.data != "donate" && click.data != "ttt") ctx.deleteMessage().catch(v => 0)
   }
+  if(click.data == "ttt" && from?.id == global.db.tictactoe?.[ctx?.chat?.id]?.p1?.[0]) return await ctx.answerCbQuery("What are you doing", true)
 
   let is = {
     registered: !!global?.db?.data?.users?.[from?.id]?.nama,
@@ -316,8 +362,6 @@ bot.on("callback_query", async(ctx) => {
 })
 
 bot.on(["message", "edited_message"], async(ctx) => {
-  console.log(ctx.chat.type)
-
   global.tele = require("./lib/tele")
   global.simple = require("./lib/simple")
   let Command = fs.readdirSync("./cmd/").filter(v => !v.startsWith(".")).map(v => require(`./cmd/${v}`))

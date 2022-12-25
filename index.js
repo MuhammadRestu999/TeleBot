@@ -16,7 +16,7 @@ const schedule = require("node-schedule")
 
 const otakudesu = require("./lib/otakudesu")
 
-const { token, owner, ownerLink, ownerId, version, prefix } = JSON.parse(fs.readFileSync("./config.json"))
+const { token, owner, ownerLink, ownerId, version, prefix, apikeyAi } = JSON.parse(fs.readFileSync("./config.json"))
 const { logger, clockString, parseSeconds, sleep, getAge } = ft
 
 const app = express()
@@ -41,6 +41,7 @@ global.otakudesu = otakudesu
 global.express = express
 global.exec = cp.exec
 global.app = app
+global.apikeyAi = apikeyAi
 try {
   global.db = {
     data: JSON.parse(fs.readFileSync("db.json"))

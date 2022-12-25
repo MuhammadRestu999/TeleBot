@@ -1,9 +1,10 @@
 {
-  "token": "5868291997:AAG9mh9FfR5QmSCIpxvnYdbDrE9arC_ejyI",
-  "owner": "Davxn",
-  "ownerId": "5765753790",
-  "ownerLink": "https://t.me/davxndev",
-  "ownerPhone": "6282328303332",
+  "token": "insert here ",
+  "owner": "your name",
+  "ownerId": "insert here",
+  "ownerLink": "insert here",
+  "ownerPhone": "insert here",
   "version": [0, 5, 0],
-  "prefix": "/"
+  "prefix": "/",
+  "apikeyAi": "insert here"
 }

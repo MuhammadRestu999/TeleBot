@@ -1,5 +1,6 @@
 module.exports = {
   start: async function(ctx, {text}) {
+if (!text) return ctx.reply("Penggunaan: /wallq Abyss")
     let markup = Markup.inlineKeyboard([
       Markup.button.callback("Next", "wnext"),
       Markup.button.callback("Delete", "d")

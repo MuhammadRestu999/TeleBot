@@ -5,11 +5,8 @@ if (!text) return ctx.reply("Penggunaan: /wallq Abyss")
       Markup.button.callback("Next", "wnext"),
       Markup.button.callback("Delete", "d")
     ])
-    let res = await fetch('https://wall.alphacoders.com/api2.0', '/get.php', {
-      auth: '3e7756c85df54b78f934a284c11abe4e',
-      method: 'search',
-      term: text
-    })
+    let res = await fetch('https://wall.alphacoders.com/api2.0/get.php=3e7756c85df54b78f934a284c11abe4e?method=search&term='+text
+    )
 if (!res.ok) return await res.text()
     let json = await res.json()
     if(json.total_match == 0) return ctx.reply(`Tidak dapat menemukan \"${text}\"!`)

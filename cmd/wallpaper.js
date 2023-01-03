@@ -11,7 +11,7 @@ if (!res.ok) return await res.text()
     let json = await res.json()
     if(json.total_match == 0) return ctx.reply(`Tidak dapat menemukan \"${text}\"!`)
 let img = json.wallpapers[Math.floor(Math.random() * json.wallpapers.length)]
-ctx.replyWithPhoto(img, {
+ctx.replyWithPhoto(img.url_image, {
       "caption": `Source: https://wall.alphacoders.com/`,
       ...markup
     })

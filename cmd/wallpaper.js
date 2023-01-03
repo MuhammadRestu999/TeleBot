@@ -18,7 +18,7 @@ ctx.replyWithPhoto(img, {
       ...markup
     })
   },
-  tags: "wallq",
-  help: ["searching"],
+  tags: "searching",
+  help: ["wallq"],
   desc: "Mencari wallpaper dari alphacode dengan teks"
 }

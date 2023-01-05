@@ -18,7 +18,7 @@ ${res[0].answers.sort((a, b) => b.thanksCount - a.thanksCount)[0].content.trim()
 `.trim()
 
     await ctx.replyWithHTML(teks)
-} catch(e) {
+} catch (e) {
 console.log("❌❗❗❗ PLEASE CHECK UPDATE NODE MODULE")
 ctx.reply("Expired session/Eror code")
 }

@@ -4,7 +4,7 @@ module.exports = {
   start: async function(ctx, { text }) {
     if(!text) return ctx.reply("Cara penggunaan : /braily soal\n\nContoh penggunaan : /brainly Apa itu atom?")
     await ctx.reply("⏳| Silahkan tunggu")
-    Brainly.initialize(); // You should do '.initialize()' for 1st time (v2.1.0 - higher)
+    Brainly.initialize();
     const brain = new Brainly("id")
     const res = await brain.searchWithMT(text, "id")
     const teks = `=======[ 🧠Brainly Searching🔍 ]=======

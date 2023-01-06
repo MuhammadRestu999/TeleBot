@@ -1,9 +1,9 @@
 {
-  "token": "insert here ",
-  "owner": "your name",
-  "ownerId": "insert here",
-  "ownerLink": "insert here",
-  "ownerPhone": "insert here",
+  "token": "insert here",
+  "owner": "Restu",
+  "ownerId": "956679874",
+  "ownerLink": "https://t.me/MuhammadRestu",
+  "ownerPhone": "6285783417029",
   "version": [0, 5, 0],
   "prefix": "/",
   "apikeyAi": "insert here"

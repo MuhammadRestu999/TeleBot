@@ -17,7 +17,7 @@ Di Termux :
 ```bash
 pkg update -y
 pkg upgrade -y
-pkg install nano git nodejs-lts -y
+pkg install nano git nodejs -y
 git clone https://github.com/MuhammadRestu999/TeleBot
 cd TeleBot
 npm install
@@ -27,7 +27,7 @@ Di Ubuntu, VPS/RDP, etc :
 ```bash
 apt update -y
 apt upgrade -y
-apt install nano git nodejs-lts -y
+apt install nano git nodejs -y
 git clone https://github.com/MuhammadRestu999/TeleBot
 cd TeleBot
 npm install
@@ -48,7 +48,7 @@ Edit file config.json :
   </tr>
   <tr>
     <td>Token</td>
-    <td>2 30</td>
+    <td>2 24</td>
     <td>Masukkan token bot ke sini</td>
     <td>Ya</td>
   </tr>
@@ -59,21 +59,28 @@ Edit file config.json :
     <td>Tidak</td>
   </tr>
   <tr>
-  <tr>
     <td>Id Owner</td>
-    <td>4 26</td>
+    <td>4 24</td>
     <td>Masukkan id owner ke sini</td>
     <td>Tidak </td>
   </tr>
+  <tr>
     <td>Tautan Owner</td>
     <td>5 43</td>
     <td>Masukkan tautan owner ke sini (https://t.me/username)</td>
     <td>Tidak</td>
   </tr>
+  <tr>
     <td>Nomor Owner</td>
     <td>6 31</td>
     <td>Masukkan nomor hp owner ke sini (628XXXXXXXXXX)</td>
     <td>Tidak</td>
+  </tr>
+  <tr>
+    <td>Apikey OpenAI</td>
+    <td>9 27</td>
+    <td>Masukkan apikey OpenAI ke sini</td>
+    <td>Ya</td>
   </tr>
 </table>
 

@@ -1,3 +1,3 @@
 apt update -y
 apt upgrade -y
-apt install nodejs-lts -y
+apt install nodejs nano -y

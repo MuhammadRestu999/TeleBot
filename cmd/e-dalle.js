@@ -2,10 +2,10 @@ const { dalle } = require("../lib/openai.js")
 
 module.exports = {
   start: async function(ctx, { text }) {
-if (!text) return ctx.reply("Apa yg ingin dicari")
+    if(!text) return ctx.reply("Apa yg ingin dicari")
 
-let res = await dalle(text)
-await ctx.replyWithPhoto({ url: res, caption: `Selesai Membuatkan Gambar Yg Anda inginkan!` })
+    let res = await dalle(text)
+    await ctx.replyWithPhoto({ url: res, caption: "Berhasil menciptakan gambar!" })
   },
   tags: "searching",
   help: ["dalle"],

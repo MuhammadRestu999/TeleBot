@@ -11,7 +11,7 @@ Member can :
   Send media : ${res.permissions.can_send_media_messages ? "Yes" : "No"}
   Send polls : ${res.permissions.can_send_polls ? "Yes" : "No"}
   Send other message : ${res.permissions.can_send_other_message ? "Yes" : "No"}
-  Add web page preview : ${res.permissions.can_ ? "Yes" : "No"}
+  Add web page preview : ${res.permissions.can_add_web_page_preview ? "Yes" : "No"}
   Change info : ${res.permissions.can_change_info ? "Yes" : "No"}
   Invite users : ${res.permissions.can_invite_users ? "Yes" : "No"}
   Pin message : ${res.permissions.can_pin_message ? "Yes" : "No"}

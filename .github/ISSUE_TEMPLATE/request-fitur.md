@@ -8,7 +8,7 @@ assignees: MuhammadRestu999
 ---
 
 **Nama fitur**
-(dibutuhkan)
+Contoh
 
 **Deskripsi fitur**
-(opsional)
+Contoh saran fitur

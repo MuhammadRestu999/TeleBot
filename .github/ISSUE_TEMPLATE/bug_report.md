@@ -7,7 +7,7 @@ assignees: MuhammadRestu999
 
 ---
 
-**Jelaskan bugnya**
+**Deskripsikan bug**
 (dibutuhkan)
 
 **Screenshots**

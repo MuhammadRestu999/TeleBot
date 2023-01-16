@@ -1,5 +1,5 @@
 module.exports = {
-  start: async function(ctx, { user, text }) {
+  start: async function(ctx, { message, user, text }) {
     if(global.db.data.users[user.id]?.sn) return ctx.reply("Anda sudah terdaftar!")
 
     let [nama, lahir] = text.split("|")

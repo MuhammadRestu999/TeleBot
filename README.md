@@ -1,3 +1,10 @@
+> [!WARNING]
+> Script ini sudah terlalu tua dan sudah tidak diurus karena tidak ada waktu dan hanya saya satu-satunya maintainer di sini.
+> Jika ada waktu, mungkin saya akan membuat script bot Telegram yang baru dan lebih modern + stabil.
+> Mohon maaf untuk orang-orang yang sudah menunggu update.
+> ![Terakhir diperbarui: 2023-01-16T08:36:16Z](https://img.shields.io/date/1673858176?style=flat-square&label=Last%20updated&labelColor=%23FFFFFF&color=%23FFFFFF)
+
+
 # TeleBot
 ## Daftar isi
 - [Deskripsi](#deskripsi)
